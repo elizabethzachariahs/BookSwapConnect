@@ -3,7 +3,7 @@ from Guest.models import *
 from User.models import *
 from Admin.models import *
 from Publisher.models import *
-from django.http import JsonResponse  
+from django.http import JsonResponse
 from datetime import datetime
 from django.db.models import Q
 # Create your views here.
@@ -133,7 +133,7 @@ def searchbook(request):
 
 def ajaxsearch(request):
     uid = request.session['uid']
-    user = tbl_user.objects.get(id=uid) 
+    user = tbl_user.objects.get(id=uid)
     if ((request.GET.get("bookName")!="") and (request.GET.get("pid")!="") and (request.GET.get("gid")!="")):
         print("1")
         ubook = tbl_uaddbook.objects.filter((Q(ubook_name__istartswith=request.GET.get("bookName")) | Q(ubook_authname__istartswith=request.GET.get("bookName"))) & Q(user__place=request.GET.get("pid")) & Q(ubook_genre=request.GET.get("gid")) & Q(ubook_status=0)).exclude(user=user)
@@ -456,9 +456,14 @@ def ajaxpsearch(request):
 def ViewPmore(request,bid):
     if 'uid' in request.session:              
         ViewBook=tbl_paddbook.objects.get(id=bid)
-        return render(request,"User/ViewPmore.html",{'ViewBook':ViewBook})
+        return render(request,"User/ViewPmore.html",{'ViewBook':ViewBook,"id":bid})
     else:
         return redirect("Guest:Login")
+    
+def publisherbook_review(request,id):
+    ar=[1,2,3,4,5]
+    stardata=tbl_rating.objects.filter(book=id).order_by('-datetime')
+    return render(request,"User/Publisher_Book_Review.html",{"data":stardata,"ar":ar})
 
 def Addcart(request,pid):
     if 'uid' in request.session:  
@@ -512,8 +517,8 @@ def Mycart(request):
         return render(request,"User/MyCart.html")
 
 def DelCart(request,did):
-    tbl_ucart.objects.get(id=did).delete()
-    return redirect("User:Myusercart")
+    tbl_cart.objects.get(id=did).delete()
+    return redirect("User:Mycart")
 
 def CartQty(request):
     qty=request.GET.get('QTY')
@@ -589,11 +594,11 @@ def userrating(request,mid):
     parray=[1,2,3,4,5]
     mid=mid
     cart = tbl_swap.objects.get(id=mid)
-    wdata=tbl_user.objects.get(id=cart.fromuser_id_id)
+    wdata=tbl_user.objects.get(id=cart.touser_id_id)
     
     counts=0
-    counts=stardata=tbl_rating.objects.filter(user=cart.fromuser_id_id).count()
-    # print(cart.product_id)
+    counts=stardata=tbl_rating.objects.filter(user=cart.touser_id_id).count()
+   
     if counts>0:
         res=0
         stardata=tbl_rating.objects.filter(user=wdata).order_by('-datetime')
@@ -635,7 +640,6 @@ def viewuser(request,id):
         parry.append(0)
     # print(parry)
     return render(request,"User/ViewUser.html",{"user":user,"parry":parry,"ar":ar})
-
 
 
 

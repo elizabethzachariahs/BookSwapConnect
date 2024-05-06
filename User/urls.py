@@ -99,6 +99,9 @@ urlpatterns = [
 
     path('swappayment/<int:id>',views.swappayment,name="swappayment"),
 
+    path('publisherbook_review/<int:id>',views.publisherbook_review,name="publisherbook_review"),
+
+
 
 
 

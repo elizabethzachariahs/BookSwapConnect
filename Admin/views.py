@@ -310,7 +310,7 @@ def completed(request,id):
     swap.save()
     return redirect("webadmin:vieworders")
 
-def viewcomplaint(request):
+def viewcomplaint(request): 
     userdata=tbl_user.objects.all()
     publisherdata=tbl_publisher.objects.all()
     usercomplaint=tbl_complaint.objects.filter(user_id__in=userdata)
